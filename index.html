@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialGuard: Desafio de Privacidade</title>
+    <!-- Tailwind CSS para um design elegante e responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter para tipografia moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome para ícones expressivos e familiares de redes sociais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Custom scrollbars para o feed simulado */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(156, 163, 175, 0.5);
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+
+    <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-4 px-6 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-200 dark:shadow-none">
+                    <i class="fa-solid fa-shield-halved text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-tight text-slate-900 dark:text-white">Social<span class="text-indigo-600 dark:text-indigo-400">Guard</span></h1>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Letramento Digital • 1º Ano Ensino Médio</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <span id="scoreBadge" class="hidden bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-full text-xs font-bold border border-indigo-100 dark:border-indigo-900/50">
+                    <i class="fa-solid fa-star mr-1"></i> Pontos: <span id="currentScoreDisplay">0</span>/5
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center p-4 md:p-6 max-w-4xl w-full mx-auto">
+        
+        <!-- TELA 1: Cadastro do Estudante -->
+        <section id="loginScreen" class="w-full max-w-md bg-white dark:bg-slate-950 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-100 dark:border-slate-800 transition-all duration-300">
+            <div class="text-center mb-8">
+                <div class="inline-block bg-indigo-50 dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 p-4 rounded-full mb-4">
+                    <i class="fa-solid fa-user-shield text-4xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">Simulador de Rede Social</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                    Você assumirá o papel de um Analista de Privacidade. Ajude seus amigos a navegarem com segurança pelas redes sociais e evite ciladas virtuais!
+                </p>
+            </div>
+
+            <form id="loginForm" class="space-y-5" onsubmit="startGame(event)">
+                <div>
+                    <label for="studentName" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Nome Completo do Estudante</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 dark:text-slate-600">
+                            <i class="fa-solid fa-signature"></i>
+                        </span>
+                        <input type="text" id="studentName" required
+                            class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-900 dark:text-white placeholder-slate-400 transition"
+                            placeholder="Digite seu nome completo">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="studentGrade" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Série / Ano</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 dark:text-slate-600">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </span>
+                            <select id="studentGrade" required
+                                class="w-full pl-9 pr-2 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-900 dark:text-white text-sm transition">
+                                <option value="" disabled selected>Ano</option>
+                                <option value="1º Ano">1º Ano</option>
+                                <option value="2º Ano">2º Ano</option>
+                                <option value="3º Ano">3º Ano</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="studentClassLetter" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Turma (Letra)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400 dark:text-slate-600">
+                                <i class="fa-solid fa-font"></i>
+                            </span>
+                            <input type="text" id="studentClassLetter" required maxlength="2"
+                                class="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-slate-900 dark:text-white text-sm uppercase placeholder-slate-400 transition"
+                                placeholder="Ex: AI, B" pattern="[A-Za-z]{1,2}" title="Digite até 2 letras (Ex: A, AI)">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] text-white font-semibold rounded-xl shadow-lg shadow-indigo-100 dark:shadow-none transition duration-150 flex items-center justify-center space-x-2">
+                    <span>Começar Simulação</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+        </section>
+
+        <!-- TELA 2: Painel do Jogo (Feed de Simulação) -->
+        <section id="gameScreen" class="hidden w-full max-w-2xl bg-white dark:bg-slate-950 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-hidden flex flex-col transition-all duration-300">
+            <!-- Informações do jogador atualizadas -->
+            <div class="bg-slate-50 dark:bg-slate-900/60 px-6 py-3 border-b border-slate-150 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-user text-indigo-500"></i>
+                    <span id="playerDisplay" class="font-semibold text-slate-700 dark:text-slate-300">Estudante</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-layer-group text-indigo-500"></i>
+                    <span id="groupDisplay" class="font-semibold text-slate-700 dark:text-slate-300">Turma</span>
+                </div>
+                <div class="bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-md font-bold">
+                    Cenário <span id="currentScenarioNum">1</span> de 5
+                </div>
+            </div>
+
+            <!-- Card de Post Simulando Rede Social -->
+            <div class="p-6 flex-grow flex flex-col justify-between space-y-6">
+                
+                <!-- Interface Simulada da Rede -->
+                <div class="border border-slate-200 dark:border-slate-800 rounded-2xl bg-slate-50 dark:bg-slate-900 overflow-hidden shadow-inner">
+                    <!-- Topo do Post -->
+                    <div class="p-4 flex items-center justify-between border-b border-slate-150 dark:border-slate-800 bg-white dark:bg-slate-950">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-indigo-600 p-0.5 flex items-center justify-center shadow-sm">
+                                <div class="w-full h-full rounded-full bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden">
+                                    <span id="postAvatar" class="font-extrabold text-xs text-slate-700 dark:text-slate-300">UN</span>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 id="postUser" class="font-bold text-sm text-slate-900 dark:text-white">@usuario_amigo</h3>
+                                <p class="text-[10px] text-slate-400 flex items-center">
+                                    <i class="fa-solid fa-earth-americas mr-1"></i> Publicado há 5min
+                                </p>
+                            </div>
+                        </div>
+                        <button class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-ellipsis"></i></button>
+                    </div>
+
+                    <!-- Conteúdo do Post / Imagem ou Alerta -->
+                    <div id="postContentArea" class="bg-white dark:bg-slate-950 p-6 flex flex-col items-center justify-center min-h-[180px] border-b border-slate-150 dark:border-slate-800 text-center">
+                        <!-- Imagem/Gráfico Simulativo Dinâmico -->
+                        <div id="visualCard" class="w-full max-w-sm mb-4 p-4 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col items-center justify-center transition-all">
+                            <!-- Injetado por JS -->
+                        </div>
+                        <p id="postText" class="text-sm text-slate-600 dark:text-slate-300 font-medium px-4 leading-relaxed">Texto do post carregando...</p>
+                    </div>
+
+                    <!-- Rodapé de Likes/Ações do Post -->
+                    <div class="px-4 py-3 bg-white dark:bg-slate-950 flex justify-between text-slate-400 text-xs font-semibold">
+                        <span class="flex items-center space-x-1.5"><i class="fa-regular fa-heart"></i> <span>14 curtidas</span></span>
+                        <span class="flex items-center space-x-1.5"><i class="fa-regular fa-comment"></i> <span>3 comentários</span></span>
+                        <span class="flex items-center space-x-1.5 text-indigo-500"><i class="fa-solid fa-circle-exclamation"></i> <span id="scenarioBloomLevel">Nível de Bloom</span></span>
+                    </div>
+                </div>
+
+                <!-- Pergunta / Desafio para o Aluno -->
+                <div class="space-y-4">
+                    <div class="bg-indigo-50/70 dark:bg-slate-900/80 p-4 rounded-xl border border-indigo-100/50 dark:border-slate-800">
+                        <h4 class="text-xs uppercase font-extrabold tracking-wider text-indigo-600 dark:text-indigo-400 mb-1">A sua análise:</h4>
+                        <p id="challengeText" class="text-sm font-semibold text-slate-800 dark:text-slate-200">Qual deve ser a sua atitude de segurança frente a esta situação?</p>
+                    </div>
+
+                    <!-- Opções de Resposta -->
+                    <div id="optionsContainer" class="grid grid-cols-1 gap-3">
+                        <!-- Botões de Opção injetados por JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODAL DE FEEDBACK FORMATIVO -->
+        <section id="feedbackScreen" class="hidden w-full max-w-md bg-white dark:bg-slate-950 rounded-2xl p-6 shadow-2xl border-2 border-slate-100 dark:border-slate-800 text-center transition-all duration-300">
+            <div id="feedbackIconWrapper" class="inline-block p-4 rounded-full mb-4">
+                <i id="feedbackIcon" class="fa-solid text-4xl"></i>
+            </div>
+            
+            <h3 id="feedbackTitle" class="text-xl font-extrabold mb-2">Excelente!</h3>
+            
+            <!-- Caixa de resposta certa vs selecionada -->
+            <div class="my-4 p-4 rounded-xl text-left bg-slate-50 dark:bg-slate-900 border border-slate-150 dark:border-slate-800">
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Feedback Formativo:</p>
+                <p id="feedbackExplanation" class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Aqui ficará a explicação detalhada de por que a resposta é correta ou incorreta, ensinando privacidade digital.
+                </p>
+            </div>
+
+            <button onclick="nextScenario()" class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg transition active:scale-[0.98]">
+                Continuar Desafio <i class="fa-solid fa-circle-arrow-right ml-1"></i>
+            </button>
+        </section>
+
+        <!-- TELA 3: Painel de Resultados Finais -->
+        <section id="resultScreen" class="hidden w-full max-w-lg bg-white dark:bg-slate-950 rounded-2xl p-6 md:p-8 shadow-xl border border-slate-100 dark:border-slate-800 text-center transition-all duration-300">
+            <div class="inline-block bg-emerald-50 dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 p-5 rounded-full mb-4">
+                <i class="fa-solid fa-trophy text-5xl"></i>
+            </div>
+
+            <h2 class="text-3xl font-black text-slate-900 dark:text-white mb-1">Missão Concluída!</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">Suas análises de segurança digital foram registradas.</p>
+
+            <!-- Painel de Nota -->
+            <div class="bg-slate-50 dark:bg-slate-900 rounded-2xl p-6 border border-slate-150 dark:border-slate-800 grid grid-cols-2 gap-4 mb-6">
+                <div class="border-r border-slate-200 dark:border-slate-800 pr-2">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Sua Nota Final</p>
+                    <p class="text-4xl font-black text-indigo-600 dark:text-indigo-400" id="finalGradeDisplay">0.0</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Escala de 0 a 10</p>
+                </div>
+                <div class="pl-2 flex flex-col justify-center">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Acertos</p>
+                    <p class="text-2xl font-bold text-slate-800 dark:text-slate-200"><span id="correctAnswersDisplay">0</span> / 5</p>
+                    <p class="text-[10px] text-slate-400 mt-1" id="timeDisplay">Tempo de resposta</p>
+                </div>
+            </div>
+
+            <!-- Status do Envio para Google Sheets -->
+            <div id="syncStatus" class="p-4 rounded-xl mb-6 bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-xs flex items-center justify-center space-x-2 border border-amber-200/50 dark:border-amber-900/30">
+                <i class="fa-solid fa-circle-notch animate-spin"></i>
+                <span>Enviando dados para o Google Sheets do professor...</span>
+            </div>
+
+            <div class="space-y-3">
+                <button onclick="restartGame()" class="w-full py-3.5 px-4 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-semibold rounded-xl transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Tentar Novamente</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-4 px-6">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400 dark:text-slate-500">
+            <p>© 2026 SocialGuard • Letramento Digital e Privacidade. Conforme as diretrizes da BNCC.</p>
+            <div class="flex items-center space-x-4">
+                <!-- Botão de Alternância de Tema Claro/Escuro -->
+                <button onclick="toggleTheme()" class="flex items-center space-x-2 py-1.5 px-3 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg transition duration-200" title="Alternar tema">
+                    <i id="themeIcon" class="fa-solid fa-moon"></i>
+                    <span id="themeText" class="font-medium">Modo Escuro</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // CONFIGURAÇÕES GLOBAIS
+        const SHEETS_URL = "https://script.google.com/macros/s/AKfycby4lHv6OOpWaeSfcaoTPu5ufTgSWbtY3G9DW0HaMRlVi0lFgEEEuJKe9NToUk7RRpna/exec";
+        
+        let userName = "";
+        let userGroup = "";
+        let currentScenarioIndex = 0;
+        let score = 0;
+        let startTime = null;
+        let userAnswersLog = [];
+
+        // Definição dos 5 cenários baseados na BNCC e na Taxonomia de Bloom (Entender e Compreender / Analisar)
+        const scenarios = [
+            {
+                id: "Q1",
+                user: "@lucas_viajante",
+                avatar: "LV",
+                avatarGradient: "from-amber-400 to-orange-500",
+                type: "image_post",
+                visualType: "ticket",
+                visualData: {
+                    title: "PASSAGEM AÉREA",
+                    detail: "Lucas Santos | Voo: GRU -> FLN | QR Code visível"
+                },
+                text: "Partiu férias!!! ✈️ Nem acredito que o dia chegou! Floripa me espera! #viagem #ferias",
+                challenge: "Lucas tirou uma foto da sua passagem aérea que mostra o QR Code e todos os seus dados. O que você aconselharia?",
+                bloomLevel: "Entender e Compreender",
+                options: [
+                    {
+                        text: "Curtir a foto e comentar desejando uma excelente viagem.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Embora seja amigável, curtir ignora o perigo. QR Codes e dados de passagens podem ser usados por golpistas para cancelar o voo, clonar o bilhete ou roubar milhas de fidelidade."
+                    },
+                    {
+                        text: "Enviar uma mensagem privada alertando Lucas a deletar o post e cortar/esconder dados sensíveis antes de postar.",
+                        isCorrect: true,
+                        feedback: "Correto! Dados pessoais em passagens (códigos de reserva, CPF, nome completo) e QR Codes carregam informações valiosas que golpistas usam em ataques de engenharia social. O aviso privado é ético e seguro."
+                    },
+                    {
+                        text: "Comentar publicamente na foto perguntando o número do assento e o horário do voo dele.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Fazer perguntas públicas sobre detalhes de itinerário expõe ainda mais a rotina e segurança de Lucas a qualquer pessoa que visite o perfil dele."
+                    }
+                ]
+            },
+            {
+                id: "Q2",
+                user: "@promos_da_hora",
+                avatar: "PH",
+                avatarGradient: "from-purple-500 to-indigo-500",
+                type: "ad_post",
+                visualType: "promo",
+                visualData: {
+                    title: "IPHONE 15 PRO GRÁTIS",
+                    detail: "Restam apenas 5 unidades! Clique abaixo agora!"
+                },
+                text: "🔥 ATENÇÃO GALERA! Promoção de aniversário! O Instagram está dando aparelhos grátis para quem responder à nossa pesquisa de 1 minuto na Bio! Não perca! #iphone gratis #promo",
+                challenge: "Esse post promocional apareceu no seu feed. O que você faz antes de clicar?",
+                bloomLevel: "Entender e Compreender",
+                options: [
+                    {
+                        text: "Clicar imediatamente para não perder a chance de ganhar, já que parece ser um post patrocinado.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Golpistas frequentemente burlam sistemas de anúncios ou usam perfis falsos com nomes similares a marcas conhecidas para enganar usuários. Agir sob pressão é o gatilho da engenharia social."
+                    },
+                    {
+                        text: "Ignorar ou denunciar o post, pois promoções exageradas que pedem dados pessoais são iscas de 'Phishing' para roubar credenciais.",
+                        isCorrect: true,
+                        feedback: "Correto! Phishing é uma técnica de engenharia social onde sites falsos imitam marcas conhecidas para coletar senhas, dados de cartão de crédito e infectar dispositivos. Sempre verifique nos canais oficiais."
+                    },
+                    {
+                        text: "Marcar seus melhores amigos nos comentários para que eles também possam aproveitar a oportunidade rápida.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Marcar amigos propaga o golpe para sua rede de contatos, aumentando o número de vítimas e reduzindo a confiança na sua própria conta."
+                    }
+                ]
+            },
+            {
+                id: "Q3",
+                user: "@filtro_divertido_app",
+                avatar: "FD",
+                avatarGradient: "from-pink-500 to-red-500",
+                type: "app_post",
+                visualType: "permissions",
+                visualData: {
+                    title: "PERMISSÕES DO APP",
+                    detail: "• Acesso ao Microfone\n• Ler Mensagens SMS\n• Contatos e Localização"
+                },
+                text: "Baixe o novo app 'SuperFiltro 3D' e mude seu rosto com inteligência artificial de forma incrível! 🤩✨",
+                challenge: "Ao baixar o app de filtros de foto, ele solicita as permissões listadas acima. Qual é a postura mais consciente?",
+                bloomLevel: "Analisar",
+                options: [
+                    {
+                        text: "Conceder todos os acessos solicitados, pois os sistemas de segurança da loja de aplicativos já garantem que o app é 100% seguro.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Nem todos os apps nas lojas são seguros, e muitos usam a coleta excessiva de permissões para espionagem ou comércio de perfis de marketing sem que você saiba."
+                    },
+                    {
+                        text: "Aceitar apenas acesso ao microfone e negar o SMS, já que as mensagens de texto não contêm nada que possa me expor.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Negar permissões suspeitas é bom, mas o acesso ao SMS é altamente crítico, pois mensagens contêm códigos de autenticação bancária e tokens de redefinição de senha."
+                    },
+                    {
+                        text: "Negar permissões injustificadas (como SMS e contatos) ou não instalar o aplicativo, pois um editor de fotos não necessita ler mensagens e listas de amigos para funcionar.",
+                        isCorrect: true,
+                        feedback: "Correto! Esse é o Princípio do Privilégio Mínimo. Softwares devem ter acesso apenas ao que é estritamente necessário para realizar seu trabalho. SMS e Contatos servem frequentemente para capturar códigos de segurança ou criar redes de SPAM."
+                    }
+                ]
+            },
+            {
+                id: "Q4",
+                user: "Configurações de Perfil",
+                avatar: "⚙️",
+                avatarGradient: "from-slate-600 to-slate-800",
+                type: "setup_post",
+                visualType: "settings",
+                visualData: {
+                    title: "PRIVACIDADE DA CONTA",
+                    detail: "[ ] Conta Pública\n[ ] Conta Privada"
+                },
+                text: "Você está revisando as opções de visibilidade de sua conta em uma rede de fotos bem famosa.",
+                challenge: "Considerando a sua privacidade online e segurança do mundo real, qual configuração de perfil é a ideal?",
+                bloomLevel: "Entender e Compreender",
+                options: [
+                    {
+                        text: "Manter a conta pública para engajar com mais pessoas do mundo inteiro, detalhando sua rotina escolar e localizações reais.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Perfis públicos expondo rotina, uniforme escolar ou endereço criam riscos de segurança física (stalkers) e facilitam ataques direcionados de engenharia social."
+                    },
+                    {
+                        text: "Configurar como perfil privado, aceitando apenas pessoas conhecidas do cotidiano e limitando quem pode comentar ou marcar suas fotos.",
+                        isCorrect: true,
+                        feedback: "Correto! A privacidade proativa protege suas informações contra raspagem automatizada de dados e impede que pessoas mal-intencionadas usem fotos pessoais de forma indevida ou montagens."
+                    },
+                    {
+                        text: "Manter o perfil público, mas colocar seu número de WhatsApp de forma clara na biografia caso alguém queira virar seu amigo.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Disponibilizar contatos diretos como telefone publicamente atrai ligações fraudulentas, golpes no WhatsApp e tentativas de invasão usando SIM Swap (clonagem de chip)."
+                    }
+                ]
+            },
+            {
+                id: "Q5",
+                user: "@seguranca_plataforma",
+                avatar: "SP",
+                avatarGradient: "from-blue-600 to-cyan-500",
+                type: "alert_post",
+                visualType: "sms",
+                visualData: {
+                    title: "MENSAGEM DE TEXTO (SMS)",
+                    detail: "CÓDIGO DE RECUPERAÇÃO: 749-301\nNão compartilhe este código."
+                },
+                text: "Atenção: Você recebe um SMS de urgência alegando que sua conta será desativada e pede para enviar o código de 6 dígitos recebido de volta pelo chat.",
+                challenge: "Como lidar com esse tipo de contato que aparenta ser o 'Suporte Oficial' da rede social?",
+                bloomLevel: "Analisar",
+                options: [
+                    {
+                        text: "Enviar o código de 6 dígitos solicitado o quanto antes, para que a conta não corra o risco de ser bloqueada permanentemente.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Plataformas reais de redes sociais nunca solicitam códigos de verificação ou senhas por chat privado ou SMS. Esse código serve exatamente para invadir a sua conta com o Múltiplo Fator de Autenticação (MFA)."
+                    },
+                    {
+                        text: "Ignorar o pedido, bloquear o contato e verificar o status real do seu perfil diretamente através dos canais de ajuda oficiais integrados nas configurações do aplicativo.",
+                        isCorrect: true,
+                        feedback: "Correto! Hackers usam táticas de estresse, fingindo urgência extrema para que a vítima aja sem pensar e forneça códigos MFA que dão acesso total ao perfil."
+                    },
+                    {
+                        text: "Copiar o código e enviar a um amigo técnico para que ele valide se o código é original do Instagram.",
+                        isCorrect: false,
+                        feedback: "Incorreto! Repassar códigos confidenciais para terceiros, mesmo conhecidos, aumenta consideravelmente a chance de vazamento ou uso incorreto da credencial."
+                    }
+                ]
+            }
+        ];
+
+        // FUNÇÃO DE INICIALIZAÇÃO E CONTROLE DE TEMAS
+        window.onload = function() {
+            // Inicializar o tema de acordo com a preferência salva
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                updateThemeUI(true);
+            } else {
+                document.documentElement.classList.remove('dark');
+                updateThemeUI(false);
+            }
+        };
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeUI(isDark);
+        }
+
+        function updateThemeUI(isDark) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            if (isDark) {
+                icon.className = "fa-solid fa-sun";
+                text.innerText = "Modo Claro";
+            } else {
+                icon.className = "fa-solid fa-moon";
+                text.innerText = "Modo Escuro";
+            }
+        }
+
+        // CONTROLADOR DE FLUXO DO JOGO
+        function startGame(event) {
+            event.preventDefault();
+            userName = document.getElementById('studentName').value.trim();
+            const studentGrade = document.getElementById('studentGrade').value;
+            const studentClassLetter = document.getElementById('studentClassLetter').value.trim().toUpperCase();
+
+            if (!userName || !studentGrade || !studentClassLetter) return;
+
+            userGroup = `${studentGrade} ${studentClassLetter}`;
+
+            // Transição de Telas
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('scoreBadge').classList.remove('hidden');
+
+            // Atualização dos nomes na interface
+            document.getElementById('playerDisplay').innerText = userName;
+            document.getElementById('groupDisplay').innerText = userGroup;
+
+            startTime = new Date();
+            currentScenarioIndex = 0;
+            score = 0;
+            userAnswersLog = [];
+            
+            loadScenario(currentScenarioIndex);
+        }
+
+        // CARREGA UM CENÁRIO ESPECÍFICO NO FEED
+        function loadScenario(index) {
+            if (index >= scenarios.length) {
+                endGame();
+                return;
+            }
+
+            const s = scenarios[index];
+            
+            // Atualizar contadores
+            document.getElementById('currentScenarioNum').innerText = index + 1;
+            document.getElementById('currentScoreDisplay').innerText = score;
+            document.getElementById('scenarioBloomLevel').innerText = `Taxonomia: ${s.bloomLevel}`;
+
+            // Atualizar perfil de quem postou
+            document.getElementById('postUser').innerText = s.user;
+            document.getElementById('postAvatar').innerText = s.avatar;
+            
+            // Fornecer cores divertidas baseadas no gradiente do cenário
+            const avatarDiv = document.getElementById('postAvatar').parentElement.parentElement;
+            avatarDiv.className = `w-10 h-10 rounded-full bg-gradient-to-tr ${s.avatarGradient} p-0.5 flex items-center justify-center shadow-sm`;
+
+            // Construir o Card Visual interativo do post
+            const visualCard = document.getElementById('visualCard');
+            visualCard.innerHTML = ""; // Limpa anterior
+            
+            if (s.visualType === 'ticket') {
+                visualCard.className = "w-full max-w-sm mb-4 p-4 rounded-xl border border-amber-200 bg-amber-50 dark:bg-amber-950/20 text-slate-800 dark:text-amber-200 shadow-sm flex flex-col items-center justify-center text-center";
+                visualCard.innerHTML = `
+                    <i class="fa-solid fa-plane-departure text-4xl text-amber-500 mb-2"></i>
+                    <h5 class="font-bold text-xs uppercase tracking-widest">${s.visualData.title}</h5>
+                    <p class="text-sm font-semibold mt-1">${s.visualData.detail}</p>
+                    <div class="mt-3 flex items-center space-x-1 text-[10px] text-amber-600 dark:text-amber-400 font-bold border border-dashed border-amber-300 dark:border-amber-800 p-2 rounded">
+                        <i class="fa-solid fa-qrcode text-lg"></i>
+                        <span>[ QR CODE VÁLIDO ]</span>
+                    </div>
+                `;
+            } else if (s.visualType === 'promo') {
+                visualCard.className = "w-full max-w-sm mb-4 p-4 rounded-xl border border-red-200 bg-red-50 dark:bg-red-950/20 text-slate-800 dark:text-red-200 shadow-sm flex flex-col items-center justify-center text-center";
+                visualCard.innerHTML = `
+                    <i class="fa-solid fa-mobile-screen-button text-4xl text-red-500 mb-2 animate-bounce"></i>
+                    <h5 class="font-extrabold text-sm uppercase tracking-wide text-red-600 dark:text-red-400">${s.visualData.title}</h5>
+                    <p class="text-xs font-semibold mt-1">${s.visualData.detail}</p>
+                    <span class="mt-2 text-[9px] bg-red-600 text-white px-2 py-0.5 rounded-full font-bold">ÚLTIMA CHANCE</span>
+                `;
+            } else if (s.visualType === 'permissions') {
+                visualCard.className = "w-full max-w-sm mb-4 p-4 rounded-xl border border-purple-200 bg-purple-50 dark:bg-purple-950/20 text-slate-800 dark:text-purple-200 shadow-sm flex flex-col items-start text-left";
+                visualCard.innerHTML = `
+                    <div class="flex items-center space-x-2 mb-2 w-full justify-center">
+                        <i class="fa-solid fa-circle-exclamation text-xl text-purple-600 dark:text-purple-400"></i>
+                        <h5 class="font-bold text-xs uppercase tracking-wider">${s.visualData.title}</h5>
+                    </div>
+                    <pre class="text-xs font-mono bg-white dark:bg-slate-900 w-full p-2.5 rounded border border-purple-100 dark:border-slate-800 text-slate-600 dark:text-slate-300 whitespace-pre-line">${s.visualData.detail}</pre>
+                `;
+            } else if (s.visualType === 'settings') {
+                visualCard.className = "w-full max-w-sm mb-4 p-4 rounded-xl border border-indigo-200 bg-indigo-50 dark:bg-slate-900 text-slate-800 dark:text-indigo-200 shadow-sm flex flex-col items-center justify-center text-center";
+                visualCard.innerHTML = `
+                    <i class="fa-solid fa-user-gear text-4xl text-indigo-500 mb-2"></i>
+                    <h5 class="font-bold text-xs uppercase tracking-wider">${s.visualData.title}</h5>
+                    <div class="mt-2 text-left text-xs space-y-1.5 font-semibold bg-white dark:bg-slate-950 p-2.5 rounded border border-indigo-100 dark:border-slate-800 w-full">
+                        <div class="flex items-center space-x-2"><i class="fa-regular fa-square"></i> <span>Perfil Público (Qualquer pessoa vê)</span></div>
+                        <div class="flex items-center space-x-2 text-indigo-600"><i class="fa-regular fa-square-check"></i> <span>Perfil Privado (Apenas amigos aceitos)</span></div>
+                    </div>
+                `;
+            } else if (s.visualType === 'sms') {
+                visualCard.className = "w-full max-w-sm mb-4 p-4 rounded-xl border border-slate-300 bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-sm flex flex-col items-start text-left";
+                visualCard.innerHTML = `
+                    <div class="flex items-center space-x-2 mb-2">
+                        <i class="fa-solid fa-comment-sms text-xl text-indigo-600"></i>
+                        <h5 class="font-bold text-xs uppercase tracking-widest text-slate-500">MENSAGEM DE TEXTO</h5>
+                    </div>
+                    <p class="text-xs font-semibold bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800 w-full leading-relaxed">${s.visualData.detail}</p>
+                `;
+            }
+
+            // Atualizar textos principais
+            document.getElementById('postText').innerText = s.text;
+            document.getElementById('challengeText').innerText = s.challenge;
+
+            // Injetar botões de opção
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = "";
+            
+            s.options.forEach((opt, oIdx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 text-left bg-white dark:bg-slate-950 hover:bg-indigo-50 dark:hover:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-300 dark:hover:border-slate-700 rounded-xl transition font-medium text-sm flex items-start space-x-3 active:scale-[0.99] group text-slate-700 dark:text-slate-300";
+                btn.onclick = () => checkAnswer(opt, s);
+                btn.innerHTML = `
+                    <span class="w-6 h-6 rounded-full bg-slate-100 dark:bg-slate-800 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-950 text-slate-500 group-hover:text-indigo-600 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                        ${String.fromCharCode(65 + oIdx)}
+                    </span>
+                    <span class="group-hover:text-slate-900 dark:group-hover:text-white leading-snug">${opt.text}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // PROCESSA A RESPOSTA CLICADA PELO ALUNO
+        function checkAnswer(selectedOption, scenario) {
+            const isCorrect = selectedOption.isCorrect;
+            if (isCorrect) score++;
+
+            // Salvar no log temporário
+            userAnswersLog.push({
+                questionId: scenario.id,
+                questionText: scenario.challenge,
+                studentAnswer: selectedOption.text,
+                correctAnswer: scenario.options.find(o => o.isCorrect).text,
+                isCorrect: isCorrect,
+                bloomLevel: scenario.bloomLevel
+            });
+
+            // Apresentar Modal de Feedback
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('feedbackScreen').classList.remove('hidden');
+
+            const title = document.getElementById('feedbackTitle');
+            const explanation = document.getElementById('feedbackExplanation');
+            const iconWrapper = document.getElementById('feedbackIconWrapper');
+            const icon = document.getElementById('feedbackIcon');
+
+            if (isCorrect) {
+                title.innerText = "Excelente Atitude!";
+                title.className = "text-xl font-extrabold text-emerald-600 dark:text-emerald-400 mb-2";
+                iconWrapper.className = "inline-block p-4 rounded-full mb-4 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 animate-bounce";
+                icon.className = "fa-solid fa-circle-check text-4xl";
+            } else {
+                title.innerText = "Cuidado com o Risco!";
+                title.className = "text-xl font-extrabold text-rose-600 dark:text-rose-400 mb-2";
+                iconWrapper.className = "inline-block p-4 rounded-full mb-4 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400";
+                icon.className = "fa-solid fa-triangle-exclamation text-4xl";
+            }
+
+            explanation.innerText = selectedOption.feedback;
+        }
+
+        // AVANÇA PARA O PRÓXIMO SCENARIO
+        function nextScenario() {
+            document.getElementById('feedbackScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            currentScenarioIndex++;
+            loadScenario(currentScenarioIndex);
+        }
+
+        // TELA DE RESULTADOS FINAIS
+        function endGame() {
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('feedbackScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+
+            // Calcular Nota de 0 a 10
+            const finalGrade = (score * 2.0).toFixed(1);
+            document.getElementById('finalGradeDisplay').innerText = finalGrade;
+            document.getElementById('correctAnswersDisplay').innerText = score;
+
+            // Calcular Tempo Decorrido
+            const endTime = new Date();
+            const elapsedSeconds = Math.round((endTime - startTime) / 1000);
+            const minutes = Math.floor(elapsedSeconds / 60);
+            const seconds = elapsedSeconds % 60;
+            document.getElementById('timeDisplay').innerText = `Tempo: ${minutes}m ${seconds}s`;
+
+            // Enviar os Dados para o Google Sheets de forma segura (CORS-Safe)
+            sendToGoogleSheets(finalGrade, elapsedSeconds);
+        }
+
+        // ENVIO DOS DADOS AO GOOGLE SHEETS COM EXPONENTIAL BACKOFF E NO-CORS
+        async function sendToGoogleSheets(grade, timeInSeconds) {
+            const syncStatus = document.getElementById('syncStatus');
+            syncStatus.innerHTML = `
+                <i class="fa-solid fa-circle-notch animate-spin"></i>
+                <span>Enviando dados para o Google Sheets...</span>
+            `;
+            syncStatus.className = "p-4 rounded-xl mb-6 bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 text-xs flex items-center justify-center space-x-2 border border-amber-200/50 dark:border-amber-900/30";
+
+            const formattedTime = `${Math.floor(timeInSeconds / 60)}m ${timeInSeconds % 60}s`;
+            const payload = userAnswersLog.map(item => ({
+                timestamp: new Date().toLocaleString("pt-BR"),
+                studentName: userName,
+                groupName: userGroup,
+                questionId: item.questionId,
+                questionText: item.questionText,
+                studentAnswer: item.studentAnswer,
+                correctAnswer: item.correctAnswer,
+                isCorrect: item.isCorrect,
+                bloomLevel: item.bloomLevel,
+                finalGrade: parseFloat(grade)
+            }));
+
+            // Algoritmo de envio com Exponential Backoff para tolerância a falhas
+            let success = false;
+            let retries = 3;
+            let delay = 1000;
+
+            for (let attempt = 0; attempt < retries; attempt++) {
+                try {
+                    // Chamada POST respeitando as regras CORS do Google Apps Script
+                    await fetch(SHEETS_URL, {
+                        method: "POST",
+                        mode: "no-cors", // Requisito de desvio de CORS para Apps Script
+                        headers: {
+                            "Content-Type": "text/plain;charset=utf-8"
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    // Como usamos no-cors, assumimos sucesso caso a requisição não lance exceções de rede.
+                    success = true;
+                    break;
+                } catch (err) {
+                    console.debug(`Tentativa ${attempt + 1} de envio falhou. Retentando em ${delay}ms...`);
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    delay *= 2; // Incremento exponencial
+                }
+            }
+
+            if (success) {
+                syncStatus.className = "p-4 rounded-xl mb-6 bg-emerald-50 dark:bg-emerald-950/25 text-emerald-700 dark:text-emerald-400 text-xs flex items-center justify-center space-x-2 border border-emerald-200/50 dark:border-emerald-900/40";
+                syncStatus.innerHTML = `
+                    <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                    <div>
+                        <p class="font-bold">Dados Salvos com Sucesso!</p>
+                        <p class="text-[10px] opacity-90">O professor já pode ver seu desempenho no Google Sheets.</p>
+                    </div>
+                `;
+            } else {
+                syncStatus.className = "p-4 rounded-xl mb-6 bg-rose-50 dark:bg-rose-950/25 text-rose-700 dark:text-rose-400 text-xs flex items-center justify-center space-x-2 border border-rose-200/50 dark:border-rose-900/40";
+                syncStatus.innerHTML = `
+                    <i class="fa-solid fa-circle-exclamation text-lg"></i>
+                    <div>
+                        <p class="font-bold">Erro ao salvar na nuvem.</p>
+                        <p class="text-[10px] opacity-90">Verifique sua conexão com a internet e avise o professor.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // REINICIA O CICLO DO JOGO
+        function restartGame() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('scoreBadge').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            
+            document.getElementById('studentName').value = "";
+            document.getElementById('studentGrade').value = "";
+            document.getElementById('studentClassLetter').value = "";
+        }
+    </script>
+</body>
+</html>
